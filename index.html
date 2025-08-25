@@ -16,7 +16,7 @@
 <p><br><br></p>    
 <div class="zhengti">
     <div class="juzuo1">
-        V24050026 ( Vũ Đức Quý )
+        V24050026 ( Jun Vu )
     </div>
 
     <div class="saomatishi juzhong" id="biaoti">
@@ -133,19 +133,26 @@
         }
     }, 1000);
 
-    // Đếm số lần nhấn “刷新二维码”
-    let clickCount = 0;
-    document.querySelector('.shuaxinerweima').addEventListener('click', function () {
-        clickCount++;
+    // Tính năng: 5 lần nhấn trong 5 giây sẽ reset thời gian
+    let clickTimestamps = [];
 
-        if (clickCount >= 3) {
+    document.querySelector('.shuaxinerweima').addEventListener('click', function () {
+        const now = Date.now();
+        clickTimestamps.push(now);
+
+        // Giữ lại các lần nhấn trong 5 giây gần nhất
+        clickTimestamps = clickTimestamps.filter(t => now - t <= 5000);
+
+        if (clickTimestamps.length >= 5) {
             // Reset startTime
-            const newStartTime = Date.now();
-            localStorage.setItem("startTime", newStartTime);
-            startTime = newStartTime;
+            startTime = Date.now();
+            localStorage.setItem("startTime", startTime);
             document.getElementById('dateTime3').innerHTML = '00:00';
-            clickCount = 0;
-            console.log('⏱️ Đã reset thời gian phiên sau 3 lần nhấn!');
+
+            // Xóa lịch sử click
+            clickTimestamps = [];
+
+            console.log('⏱️ Reset phiên sau khi nhấn 5 lần trong 5 giây');
         }
     });
 
