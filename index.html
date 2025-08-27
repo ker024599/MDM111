@@ -5,10 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=GBK">
     <title>&#8206;</title>
     <link rel="apple-touch-icon-precomposed" href="http://abc.haoyunlai.xyz/favicon.ico" type="image/x-icon">
-    
-    <!-- Gán ID để có thể thay đổi -->
+
+    <!-- Thêm ID để đổi CSS -->
     <link id="main-style" rel="stylesheet" href="./style.css">
-    
+
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="icon.png">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet">
@@ -37,7 +37,8 @@
 
         <div id="neirong1">    
             <div>
-                <a class="juzhong footsty shuaxinerweima" style="margin-top: 2rem; font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
+                <!-- Gắn ID để bắt sự kiện -->
+                <a id="switch-style-btn" class="juzhong footsty shuaxinerweima" style="margin-top: 2rem; font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
             </div>
         </div>
 
@@ -136,30 +137,22 @@
         }
     }, 1000);
 
-    // Tính năng: 5 lần nhấn trong 5 giây sẽ reset thời gian
+    // Reset thời gian nếu nhấn 5 lần trong 5 giây
     let clickTimestamps = [];
-
     document.querySelector('.shuaxinerweima').addEventListener('click', function () {
         const now = Date.now();
         clickTimestamps.push(now);
-
-        // Giữ lại các lần nhấn trong 5 giây gần nhất
         clickTimestamps = clickTimestamps.filter(t => now - t <= 5000);
-
         if (clickTimestamps.length >= 5) {
-            // Reset startTime
             startTime = Date.now();
             localStorage.setItem("startTime", startTime);
             document.getElementById('dateTime3').innerHTML = '00:00';
-
-            // Xóa lịch sử click
             clickTimestamps = [];
-
-            console.log('⏱️ Reset phiên sau khi nhấn 5 lần trong 5 giây');
+            console.log('⏱️ Reset sau 5 lần nhấn trong 5 giây');
         }
     });
 
-    // Service Worker
+    // Đăng ký Service Worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').then(() => {
             console.log("Service Worker Registered v3");
@@ -167,37 +160,36 @@
     }
 
     // ============================
-    // 👉 Thêm chức năng giữ 10 giây để đổi CSS
+    // 👉 Chức năng giữ 10 giây để đổi CSS từ nút "刷新二维码"
     // ============================
 
-    let holdTimeout;
-    const qrImage = document.querySelector('.ewm');
     const styleLink = document.getElementById('main-style');
+    const switchStyleBtn = document.getElementById('switch-style-btn');
+    let holdTimer;
 
-    // Cho cả máy tính (chuột) và mobile (cảm ứng)
     function startHoldTimer() {
-        holdTimeout = setTimeout(() => {
+        holdTimer = setTimeout(() => {
             if (styleLink.href.includes('style.css')) {
                 styleLink.href = './style1.css';
-                console.log("✅ Đã chuyển sang style1.css");
+                console.log('✅ Đã chuyển sang style1.css');
             } else {
                 styleLink.href = './style.css';
-                console.log("✅ Đã chuyển lại style.css");
+                console.log('✅ Đã chuyển lại style.css');
             }
         }, 10000); // 10 giây
     }
 
     function clearHoldTimer() {
-        clearTimeout(holdTimeout);
+        clearTimeout(holdTimer);
     }
 
-    qrImage.addEventListener('mousedown', startHoldTimer);
-    qrImage.addEventListener('mouseup', clearHoldTimer);
-    qrImage.addEventListener('mouseleave', clearHoldTimer);
+    switchStyleBtn.addEventListener('mousedown', startHoldTimer);
+    switchStyleBtn.addEventListener('mouseup', clearHoldTimer);
+    switchStyleBtn.addEventListener('mouseleave', clearHoldTimer);
 
-    qrImage.addEventListener('touchstart', startHoldTimer);
-    qrImage.addEventListener('touchend', clearHoldTimer);
-    qrImage.addEventListener('touchcancel', clearHoldTimer);
+    switchStyleBtn.addEventListener('touchstart', startHoldTimer);
+    switchStyleBtn.addEventListener('touchend', clearHoldTimer);
+    switchStyleBtn.addEventListener('touchcancel', clearHoldTimer);
 </script>
 </body>
 </html>
