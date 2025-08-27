@@ -2,61 +2,39 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=GBK">
-    <title>&#8206;</title>
-    <link rel="apple-touch-icon-precomposed" href="http://abc.haoyunlai.xyz/favicon.ico" type="image/x-icon">
+    <title>QR & Style Switch</title>
 
-    <!-- Thêm ID để đổi CSS -->
+    <!-- Link style mặc định -->
     <link id="main-style" rel="stylesheet" href="./style.css">
 
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
-
-    <style>
-        /* CSS căn bản cho 2 nút cùng hàng */
-        #neirong1 {
-            display: flex;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-        #exit-btn {
-            font-size: 3.3rem;
-            margin-right: 20px;
-            display: none; /* Ẩn mặc định */
-            cursor: pointer;
-        }
-        #refresh-btn {
-            font-size: 3.3rem;
-            cursor: pointer;
-        }
-    </style>
 </head>
-
 <body>
-<p><br><br></p>    
+
 <div class="zhengti">
     <div class="juzuo1">
         V24050026 ( Jun Vu )
     </div>
 
     <div class="saomatishi juzhong" id="biaoti">
-        将二维码对准扫描器扫码进出场    
+        将二维码对准扫描器扫码进出场
     </div>
 
-    <div class="yuan1 yuant"></div>
-    <div class="yuan2 yuant"></div>
+    <!-- ... Các phần khác giữ nguyên ... -->
 
     <div class="juzhong erweima zise">
         <div class="juzuo2" id="dateTime00" style="font-weight: 500;"></div>
         <div id="neirong">
-            <img class="ewm" src="./ewm.gif">         
+            <img class="ewm" src="./ewm.gif" alt="QR code">         
         </div>
 
-        <div id="neirong1">
-            <a id="exit-btn" href="javascript:void(0)">申请离场</a>
-            <a id="refresh-btn" class="shuaxinerweima" href="javascript:void(0)">刷新二维码</a>
+        <!-- Nút nằm cùng 1 hàng -->
+        <div id="neirong1" class="button-container">
+            <!-- Nút 申请离场 sẽ ẩn khi chưa đổi style -->
+            <button id="liChangBtn" class="footsty" style="display:none;">申请离场</button>
+            <button id="shuaxinBtn" class="footsty">刷新二维码</button>
         </div>
 
         <div class="juzhong footsty yishengxiao word_breath">
@@ -73,10 +51,8 @@
     </div>
 </div>
 
-<div id="ai-assist-root"></div>
-
 <script>
-    // Định dạng thời gian
+    // Hàm format thời gian
     Date.prototype.format = function (fmt) {
         var o = {
             "y+": this.getFullYear(),
@@ -94,14 +70,78 @@
     }
 
     // Hiển thị thời gian thực
-    setInterval(function () {
+    setInterval(() => {
         const dt = document.getElementById('dateTime00');
-        if (dt) {
-            dt.innerHTML = (new Date()).format('yyyy-M-d hh:mm:ss');
-        }
+        if (dt) dt.innerHTML = (new Date()).format('yyyy-M-d hh:mm:ss');
     }, 1000);
 
-    // Hàm đổi nội dung khi nhấn “已生效”
+    // Biến thời gian bắt đầu
+    let startTime = localStorage.getItem("startTime");
+    if (!startTime) {
+        startTime = Date.now();
+        localStorage.setItem("startTime", startTime);
+    } else {
+        startTime = parseInt(startTime);
+    }
+
+    // Cập nhật bộ đếm thời gian mỗi giây
+    setInterval(() => {
+        let diff = Math.floor((Date.now() - startTime) / 1000);
+        let hrs = Math.floor(diff / 3600);
+        let mins = Math.floor((diff % 3600) / 60);
+        let secs = diff % 60;
+
+        if (hrs >= 12) {
+            startTime = Date.now();
+            localStorage.setItem("startTime", startTime);
+            hrs = 0; mins = 0; secs = 0;
+        }
+
+        document.getElementById('dateTime3').innerHTML = 
+            (hrs > 0 ? hrs + ':' : '') +
+            (mins < 10 ? '0' : '') + mins + ':' +
+            (secs < 10 ? '0' : '') + secs;
+    }, 1000);
+
+    // Đổi giao diện và reset thời gian khi nhấn "刷新二维码" 5 lần trong 5 giây
+    const styleLink = document.getElementById('main-style');
+    const shuaxinBtn = document.getElementById('shuaxinBtn');
+    const liChangBtn = document.getElementById('liChangBtn');
+
+    let clickTimestamps = [];
+
+    function toggleStyleAndResetTime() {
+        // Reset thời gian
+        startTime = Date.now();
+        localStorage.setItem("startTime", startTime);
+        document.getElementById('dateTime3').innerHTML = '00:00';
+
+        // Đổi CSS
+        if (styleLink.href.includes('style.css')) {
+            styleLink.href = './style1.css';
+            // Hiển thị nút 申请离场
+            liChangBtn.style.display = 'inline-block';
+        } else {
+            styleLink.href = './style.css';
+            // Ẩn nút 申请离场
+            liChangBtn.style.display = 'none';
+        }
+    }
+
+    shuaxinBtn.addEventListener('click', () => {
+        const now = Date.now();
+        clickTimestamps.push(now);
+        // Lọc các lần click trong 5 giây gần nhất
+        clickTimestamps = clickTimestamps.filter(t => now - t <= 5000);
+
+        if (clickTimestamps.length >= 5) {
+            toggleStyleAndResetTime();
+            clickTimestamps = [];
+            console.log('⏱️ Đã reset thời gian và đổi giao diện sau 5 lần nhấn trong 5 giây');
+        }
+    });
+
+    // Hàm changetxt (giữ nguyên)
     function changetxt() {
         document.getElementById('biaoti').innerText = "您的设备已符合安全规范";
         document.getElementById('neirong').innerHTML =
@@ -118,85 +158,7 @@
         }, 1000);
     }
 
-    // Đếm thời gian phiên truy cập
-    let startTime = localStorage.getItem("startTime");
-    if (!startTime) {
-        startTime = Date.now();
-        localStorage.setItem("startTime", startTime);
-    } else {
-        startTime = parseInt(startTime);
-    }
-
-    // Cập nhật thời gian đếm ngược mỗi giây
-    function updateElapsedTime() {
-        let diff = Math.floor((Date.now() - startTime) / 1000); // giây
-        let hrs = Math.floor(diff / 3600);
-        let mins = Math.floor((diff % 3600) / 60);
-        let secs = diff % 60;
-
-        if (hrs >= 12) {
-            startTime = Date.now();
-            localStorage.setItem("startTime", startTime);
-            hrs = 0;
-            mins = 0;
-            secs = 0;
-        }
-
-        if (hrs > 0) {
-            document.getElementById('dateTime3').innerHTML =
-                hrs + ':' +
-                (mins < 10 ? '0' : '') + mins + ':' +
-                (secs < 10 ? '0' : '') + secs;
-        } else {
-            document.getElementById('dateTime3').innerHTML =
-                (mins < 10 ? '0' : '') + mins + ':' +
-                (secs < 10 ? '0' : '') + secs;
-        }
-    }
-    setInterval(updateElapsedTime, 1000);
-
-    // Mảng lưu thời gian nhấn
-    let clickTimestamps = [];
-
-    const styleLink = document.getElementById('main-style');
-    const refreshBtn = document.getElementById('refresh-btn');
-    const exitBtn = document.getElementById('exit-btn');
-
-    refreshBtn.addEventListener('click', function () {
-        const now = Date.now();
-        clickTimestamps.push(now);
-
-        // Giữ lại lần nhấn trong 5 giây
-        clickTimestamps = clickTimestamps.filter(t => now - t <= 5000);
-
-        if (clickTimestamps.length >= 5) {
-            // Đổi style
-            if (styleLink.href.includes('style.css')) {
-                styleLink.href = './style1.css';
-                exitBtn.style.display = 'inline-block'; // hiện nút 申请离场
-            } else {
-                styleLink.href = './style.css';
-                exitBtn.style.display = 'none'; // ẩn nút 申请离场
-            }
-
-            // Reset thời gian
-            startTime = Date.now();
-            localStorage.setItem("startTime", startTime);
-            updateElapsedTime();
-
-            // Xóa lịch sử nhấn
-            clickTimestamps = [];
-
-            console.log('⏱️ Đổi style và reset thời gian sau 5 lần nhấn trong 5 giây');
-        }
-    });
-
-    // Đăng ký Service Worker
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').then(() => {
-            console.log("Service Worker Registered v3");
-        });
-    }
 </script>
+
 </body>
 </html>
