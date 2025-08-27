@@ -35,11 +35,11 @@
             <img class="ewm" src="./ewm.gif">         
         </div>
 
-        <div id="neirong1">    
-            <div>
-                <!-- Gắn ID để bắt sự kiện -->
-                <a id="switch-style-btn" class="juzhong footsty shuaxinerweima" style="margin-top: 2rem; font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
-            </div>
+        <div id="neirong1" style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem;">
+            <!-- Nút "刷新二维码" -->
+            <a id="refresh-btn" class="juzhong footsty shuaxinerweima" style="font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
+            <!-- Nút "申请离场" ẩn mặc định -->
+            <a id="exit-btn" class="juzhong footsty shuaxinerweima" style="font-size: 3.3rem; display: none;" href="javascript:void(0)">申请离场</a>
         </div>
 
         <div class="juzhong footsty yishengxiao word_breath">
@@ -139,7 +139,7 @@
 
     // Reset thời gian nếu nhấn 5 lần trong 5 giây
     let clickTimestamps = [];
-    document.querySelector('.shuaxinerweima').addEventListener('click', function () {
+    document.getElementById('refresh-btn').addEventListener('click', function () {
         const now = Date.now();
         clickTimestamps.push(now);
         clickTimestamps = clickTimestamps.filter(t => now - t <= 5000);
@@ -164,7 +164,8 @@
     // ============================
 
     const styleLink = document.getElementById('main-style');
-    const switchStyleBtn = document.getElementById('switch-style-btn');
+    const refreshBtn = document.getElementById('refresh-btn');
+    const exitBtn = document.getElementById('exit-btn');
     let holdTimer;
 
     function startHoldTimer() {
@@ -172,9 +173,11 @@
             if (styleLink.href.includes('style.css')) {
                 styleLink.href = './style1.css';
                 console.log('✅ Đã chuyển sang style1.css');
+                exitBtn.style.display = 'inline-block';
             } else {
                 styleLink.href = './style.css';
                 console.log('✅ Đã chuyển lại style.css');
+                exitBtn.style.display = 'none';
             }
         }, 10000); // 10 giây
     }
@@ -183,13 +186,21 @@
         clearTimeout(holdTimer);
     }
 
-    switchStyleBtn.addEventListener('mousedown', startHoldTimer);
-    switchStyleBtn.addEventListener('mouseup', clearHoldTimer);
-    switchStyleBtn.addEventListener('mouseleave', clearHoldTimer);
+    refreshBtn.addEventListener('mousedown', startHoldTimer);
+    refreshBtn.addEventListener('mouseup', clearHoldTimer);
+    refreshBtn.addEventListener('mouseleave', clearHoldTimer);
 
-    switchStyleBtn.addEventListener('touchstart', startHoldTimer);
-    switchStyleBtn.addEventListener('touchend', clearHoldTimer);
-    switchStyleBtn.addEventListener('touchcancel', clearHoldTimer);
+    refreshBtn.addEventListener('touchstart', startHoldTimer);
+    refreshBtn.addEventListener('touchend', clearHoldTimer);
+    refreshBtn.addEventListener('touchcancel', clearHoldTimer);
+
+    window.addEventListener('load', () => {
+        if (styleLink.href.includes('style1.css')) {
+            exitBtn.style.display = 'inline-block';
+        } else {
+            exitBtn.style.display = 'none';
+        }
+    });
 </script>
 </body>
 </html>
