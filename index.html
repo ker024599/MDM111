@@ -13,6 +13,25 @@
     <link rel="apple-touch-icon" href="icon.png">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
+
+    <style>
+        /* CSS căn bản cho 2 nút cùng hàng */
+        #neirong1 {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        #exit-btn {
+            font-size: 3.3rem;
+            margin-right: 20px;
+            display: none; /* Ẩn mặc định */
+            cursor: pointer;
+        }
+        #refresh-btn {
+            font-size: 3.3rem;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -35,11 +54,9 @@
             <img class="ewm" src="./ewm.gif">         
         </div>
 
-        <div id="neirong1" style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem;">
-            <!-- Nút "刷新二维码" -->
-            <a id="refresh-btn" class="juzhong footsty shuaxinerweima" style="font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
-            <!-- Nút "申请离场" ẩn mặc định -->
-            <a id="exit-btn" class="juzhong footsty shuaxinerweima" style="font-size: 3.3rem; display: none;" href="javascript:void(0)">申请离场</a>
+        <div id="neirong1">
+            <a id="exit-btn" href="javascript:void(0)">申请离场</a>
+            <a id="refresh-btn" class="shuaxinerweima" href="javascript:void(0)">刷新二维码</a>
         </div>
 
         <div class="juzhong footsty yishengxiao word_breath">
@@ -111,7 +128,7 @@
     }
 
     // Cập nhật thời gian đếm ngược mỗi giây
-    setInterval(function () {
+    function updateElapsedTime() {
         let diff = Math.floor((Date.now() - startTime) / 1000); // giây
         let hrs = Math.floor(diff / 3600);
         let mins = Math.floor((diff % 3600) / 60);
@@ -135,20 +152,42 @@
                 (mins < 10 ? '0' : '') + mins + ':' +
                 (secs < 10 ? '0' : '') + secs;
         }
-    }, 1000);
+    }
+    setInterval(updateElapsedTime, 1000);
 
-    // Reset thời gian nếu nhấn 5 lần trong 5 giây
+    // Mảng lưu thời gian nhấn
     let clickTimestamps = [];
-    document.getElementById('refresh-btn').addEventListener('click', function () {
+
+    const styleLink = document.getElementById('main-style');
+    const refreshBtn = document.getElementById('refresh-btn');
+    const exitBtn = document.getElementById('exit-btn');
+
+    refreshBtn.addEventListener('click', function () {
         const now = Date.now();
         clickTimestamps.push(now);
+
+        // Giữ lại lần nhấn trong 5 giây
         clickTimestamps = clickTimestamps.filter(t => now - t <= 5000);
+
         if (clickTimestamps.length >= 5) {
+            // Đổi style
+            if (styleLink.href.includes('style.css')) {
+                styleLink.href = './style1.css';
+                exitBtn.style.display = 'inline-block'; // hiện nút 申请离场
+            } else {
+                styleLink.href = './style.css';
+                exitBtn.style.display = 'none'; // ẩn nút 申请离场
+            }
+
+            // Reset thời gian
             startTime = Date.now();
             localStorage.setItem("startTime", startTime);
-            document.getElementById('dateTime3').innerHTML = '00:00';
+            updateElapsedTime();
+
+            // Xóa lịch sử nhấn
             clickTimestamps = [];
-            console.log('⏱️ Reset sau 5 lần nhấn trong 5 giây');
+
+            console.log('⏱️ Đổi style và reset thời gian sau 5 lần nhấn trong 5 giây');
         }
     });
 
@@ -158,49 +197,6 @@
             console.log("Service Worker Registered v3");
         });
     }
-
-    // ============================
-    // 👉 Chức năng giữ 10 giây để đổi CSS từ nút "刷新二维码"
-    // ============================
-
-    const styleLink = document.getElementById('main-style');
-    const refreshBtn = document.getElementById('refresh-btn');
-    const exitBtn = document.getElementById('exit-btn');
-    let holdTimer;
-
-    function startHoldTimer() {
-        holdTimer = setTimeout(() => {
-            if (styleLink.href.includes('style.css')) {
-                styleLink.href = './style1.css';
-                console.log('✅ Đã chuyển sang style1.css');
-                exitBtn.style.display = 'inline-block';
-            } else {
-                styleLink.href = './style.css';
-                console.log('✅ Đã chuyển lại style.css');
-                exitBtn.style.display = 'none';
-            }
-        }, 10000); // 10 giây
-    }
-
-    function clearHoldTimer() {
-        clearTimeout(holdTimer);
-    }
-
-    refreshBtn.addEventListener('mousedown', startHoldTimer);
-    refreshBtn.addEventListener('mouseup', clearHoldTimer);
-    refreshBtn.addEventListener('mouseleave', clearHoldTimer);
-
-    refreshBtn.addEventListener('touchstart', startHoldTimer);
-    refreshBtn.addEventListener('touchend', clearHoldTimer);
-    refreshBtn.addEventListener('touchcancel', clearHoldTimer);
-
-    window.addEventListener('load', () => {
-        if (styleLink.href.includes('style1.css')) {
-            exitBtn.style.display = 'inline-block';
-        } else {
-            exitBtn.style.display = 'none';
-        }
-    });
 </script>
 </body>
 </html>
