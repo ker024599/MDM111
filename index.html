@@ -1,192 +1,195 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=GBK">
     <title>&#8206;</title>
-    <link rel="apple-touch-icon-precomposed" href="http://abc.haoyunlai.xyz/favicon.ico" type="image/x-icon" />
-    <link id="main-style" rel="stylesheet" href="./style.css" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link rel="apple-touch-icon" href="icon.png" />
-    <link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet" />
-    <link rel="manifest" href="manifest.json" />
-    <style>
-        /* Dùng chung cho 2 nút */
-        .shuaxinerweima, .lichang-btn {
-            color: #686868;              /* chữ xám nhạt */
-            font-size: 3.3rem !important; /* ưu tiên inline hoặc ghi đè */
-            margin-top: 2rem;
-            padding-top: 5rem;           /* padding trên từ .shuaxinerweima */
-            padding: 2rem;               /* padding tổng (ghi đè lại padding trên nếu cần) */
-            padding-top: 5rem;           /* giữ padding trên 5rem */
-            background: none;
-            border: none;
-            text-decoration: none;
-            cursor: pointer;
-            user-select: none;
-            text-align: center;
-            display: inline-block;
-            font-family: 'Noto Sans', sans-serif;
-        }
-        /* Container 2 nút cạnh nhau, canh phải, cách 2rem */
-        #neirong1 {
-            margin-top: 2rem;
-            display: flex;
-            justify-content: flex-end;
-            gap: 2rem;
-            align-items: center;
-        }
-    </style>
+    <link rel="apple-touch-icon-precomposed" href="http://abc.haoyunlai.xyz/favicon.ico" type="image/x-icon">
+
+    <!-- Thêm ID để đổi CSS -->
+    <link id="main-style" rel="stylesheet" href="./style.css">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
-    <p><br /><br /></p>
-    <div class="zhengti">
-        <div class="juzuo1">V24050026 ( Jun Vu )</div>
-        <div class="saomatishi juzhong" id="biaoti">将二维码对准扫描器扫码进出场</div>
-        <div class="yuan1 yuant"></div>
-        <div class="yuan2 yuant"></div>
-        <div class="juzhong erweima zise">
-            <div class="juzuo2" id="dateTime00" style="font-weight: 500;"></div>
-            <div id="neirong">
-                <img class="ewm" src="./ewm.gif" alt="二维码" />
-            </div>
+<p><br><br></p>    
+<div class="zhengti">
+    <div class="juzuo1">
+        V24050026 ( Jun Vu )
+    </div>
 
-            <div id="neirong1">
-                <a href="javascript:void(0)" class="lichang-btn" id="liChangBtn" style="display:none;">申请离场</a>
-                <a href="javascript:void(0)" class="shuaxinerweima" id="shuaxinBtn">刷新二维码</a>
-            </div>
+    <div class="saomatishi juzhong" id="biaoti">
+        将二维码对准扫描器扫码进出场    
+    </div>
 
-            <div class="juzhong footsty yishengxiao word_breath">
-                <div style="display:" onclick="changetxt()">已生效</div>
-            </div>
-            <div class="juzhong footsty shijian">
-                <div id="dateTime3">00:00</div>
+    <div class="yuan1 yuant"></div>
+    <div class="yuan2 yuant"></div>
+
+    <div class="juzhong erweima zise">
+        <div class="juzuo2" id="dateTime00" style="font-weight: 500;"></div>
+        <div id="neirong">
+            <img class="ewm" src="./ewm.gif">         
+        </div>
+
+        <div id="neirong1">    
+            <div>
+                <!-- Gắn ID để bắt sự kiện -->
+                <a id="switch-style-btn" class="juzhong footsty shuaxinerweima" style="margin-top: 2rem; font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
             </div>
         </div>
 
-        <div class="dierhang">
-            尊敬的员工您好，您已进入企业涉密区域，出于企业安全考虑，您的手机摄像头将被禁止拍摄，感谢您的配合。
+        <div class="juzhong footsty yishengxiao word_breath">
+            <div style="display:" onclick="changetxt()">已生效</div>
+        </div>
+
+        <div class="juzhong footsty shijian">
+            <div id="dateTime3">00:00</div>
         </div>
     </div>
-    <div id="ai-assist-root"></div>
 
-    <script>
-        // Định dạng thời gian
-        Date.prototype.format = function (fmt) {
-            var o = {
-                "y+": this.getFullYear(),
-                "M+": this.getMonth() + 1,
-                "d+": this.getDate(),
-                "h+": this.getHours(),
-                "m+": this.getMinutes(),
-                "s+": this.getSeconds(),
-            };
-            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-            for (var k in o)
-                if (new RegExp("(" + k + ")").test(fmt))
-                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-            return fmt;
+    <div class="dierhang">
+        尊敬的员工您好，您已进入企业涉密区域，出于企业安全考虑，您的手机摄像头将被禁止拍摄，感谢您的配合。
+    </div>
+</div>
+
+<div id="ai-assist-root"></div>
+
+<script>
+    // Định dạng thời gian
+    Date.prototype.format = function (fmt) {
+        var o = {
+            "y+": this.getFullYear(),
+            "M+": this.getMonth() + 1,
+            "d+": this.getDate(),
+            "h+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
         };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
 
-        // Hiển thị thời gian thực
+    // Hiển thị thời gian thực
+    setInterval(function () {
+        const dt = document.getElementById('dateTime00');
+        if (dt) {
+            dt.innerHTML = (new Date()).format('yyyy-M-d hh:mm:ss');
+        }
+    }, 1000);
+
+    // Hàm đổi nội dung khi nhấn “已生效”
+    function changetxt() {
+        document.getElementById('biaoti').innerText = "您的设备已符合安全规范";
+        document.getElementById('neirong').innerHTML =
+            "<img class='true' src='./true.png'>" +
+            "<div class='truetxt'>" +
+            "<p class='jinchang'>进场成功</p>" +
+            "<p class='riqi' id='dateTime01'></p></div>";
+
         setInterval(function () {
-            const dt = document.getElementById("dateTime00");
+            const dt = document.getElementById('dateTime01');
             if (dt) {
-                dt.innerHTML = new Date().format("yyyy-M-d hh:mm:ss");
+                dt.innerHTML = (new Date()).format('yyyy-MM-dd hh:mm');
             }
         }, 1000);
+    }
 
-        // Hàm đổi nội dung khi nhấn “已生效”
-        function changetxt() {
-            document.getElementById("biaoti").innerText = "您的设备已符合安全规范";
-            document.getElementById("neirong").innerHTML =
-                "<img class='true' src='./true.png'>" +
-                "<div class='truetxt'>" +
-                "<p class='jinchang'>进场成功</p>" +
-                "<p class='riqi' id='dateTime01'></p></div>";
+    // Đếm thời gian phiên truy cập
+    let startTime = localStorage.getItem("startTime");
+    if (!startTime) {
+        startTime = Date.now();
+        localStorage.setItem("startTime", startTime);
+    } else {
+        startTime = parseInt(startTime);
+    }
 
-            setInterval(function () {
-                const dt = document.getElementById("dateTime01");
-                if (dt) {
-                    dt.innerHTML = new Date().format("yyyy-MM-dd hh:mm");
-                }
-            }, 1000);
-        }
+    // Cập nhật thời gian đếm ngược mỗi giây
+    setInterval(function () {
+        let diff = Math.floor((Date.now() - startTime) / 1000); // giây
+        let hrs = Math.floor(diff / 3600);
+        let mins = Math.floor((diff % 3600) / 60);
+        let secs = diff % 60;
 
-        // Đếm thời gian phiên truy cập
-        let startTime = localStorage.getItem("startTime");
-        if (!startTime) {
+        if (hrs >= 12) {
             startTime = Date.now();
             localStorage.setItem("startTime", startTime);
+            hrs = 0;
+            mins = 0;
+            secs = 0;
+        }
+
+        if (hrs > 0) {
+            document.getElementById('dateTime3').innerHTML =
+                hrs + ':' +
+                (mins < 10 ? '0' : '') + mins + ':' +
+                (secs < 10 ? '0' : '') + secs;
         } else {
-            startTime = parseInt(startTime);
+            document.getElementById('dateTime3').innerHTML =
+                (mins < 10 ? '0' : '') + mins + ':' +
+                (secs < 10 ? '0' : '') + secs;
         }
+    }, 1000);
 
-        // Cập nhật thời gian đếm ngược mỗi giây
-        setInterval(function () {
-            let diff = Math.floor((Date.now() - startTime) / 1000); // giây
-            let hrs = Math.floor(diff / 3600);
-            let mins = Math.floor((diff % 3600) / 60);
-            let secs = diff % 60;
-
-            if (hrs >= 12) {
-                startTime = Date.now();
-                localStorage.setItem("startTime", startTime);
-                hrs = 0;
-                mins = 0;
-                secs = 0;
-            }
-
-            if (hrs > 0) {
-                document.getElementById("dateTime3").innerHTML =
-                    hrs +
-                    ":" +
-                    (mins < 10 ? "0" : "") +
-                    mins +
-                    ":" +
-                    (secs < 10 ? "0" : "") +
-                    secs;
-            } else {
-                document.getElementById("dateTime3").innerHTML =
-                    (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
-            }
-        }, 1000);
-
-        // Các nút và style
-        const styleLink = document.getElementById("main-style");
-        const shuaxinBtn = document.getElementById("shuaxinBtn");
-        const liChangBtn = document.getElementById("liChangBtn");
-        const biaoti = document.getElementById("biaoti");
-
-        // Lưu font của #biaoti lúc đầu để giữ khi đổi style
-        const biaotiFont = window.getComputedStyle(biaoti).fontFamily;
-
-        let clickTimestamps = [];
-
-        function toggleStyleAndResetTime() {
+    // Reset thời gian nếu nhấn 5 lần trong 5 giây
+    let clickTimestamps = [];
+    document.querySelector('.shuaxinerweima').addEventListener('click', function () {
+        const now = Date.now();
+        clickTimestamps.push(now);
+        clickTimestamps = clickTimestamps.filter(t => now - t <= 5000);
+        if (clickTimestamps.length >= 5) {
             startTime = Date.now();
             localStorage.setItem("startTime", startTime);
-            document.getElementById("dateTime3").innerHTML = "00:00";
-
-            if (styleLink.href.includes("style.css")) {
-                styleLink.href = "./style1.css";
-                liChangBtn.style.display = "inline-block";
-            } else {
-                styleLink.href = "./style.css";
-                liChangBtn.style.display = "none";
-            }
-
-            // Giữ font chữ của #biaoti khi đổi sang style1.css
-            biaoti.style.fontFamily = biaotiFont;
+            document.getElementById('dateTime3').innerHTML = '00:00';
+            clickTimestamps = [];
+            console.log('⏱️ Reset sau 5 lần nhấn trong 5 giây');
         }
+    });
 
-        shuaxinBtn.addEventListener("click", () => {
-            const now = Date.now();
-            clickTimestamps.push(now);
-            // Giữ lại các lần click trong 5 giây gần nhất
-            clickTimestamps = clickTimestamps.filter((t) => now - t <= 5000);
+    // Đăng ký Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').then(() => {
+            console.log("Service Worker Registered v3");
+        });
+    }
 
-            if (clickTimestamps.length >= 5) {
-                toggleStyleAndResetTime();
-                clickTimestamps = [];
-                console
+    // ============================
+    // 👉 Chức năng giữ 10 giây để đổi CSS từ nút "刷新二维码"
+    // ============================
+
+    const styleLink = document.getElementById('main-style');
+    const switchStyleBtn = document.getElementById('switch-style-btn');
+    let holdTimer;
+
+    function startHoldTimer() {
+        holdTimer = setTimeout(() => {
+            if (styleLink.href.includes('style.css')) {
+                styleLink.href = './style1.css';
+                console.log('✅ Đã chuyển sang style1.css');
+            } else {
+                styleLink.href = './style.css';
+                console.log('✅ Đã chuyển lại style.css');
+            }
+        }, 10000); // 10 giây
+    }
+
+    function clearHoldTimer() {
+        clearTimeout(holdTimer);
+    }
+
+    switchStyleBtn.addEventListener('mousedown', startHoldTimer);
+    switchStyleBtn.addEventListener('mouseup', clearHoldTimer);
+    switchStyleBtn.addEventListener('mouseleave', clearHoldTimer);
+
+    switchStyleBtn.addEventListener('touchstart', startHoldTimer);
+    switchStyleBtn.addEventListener('touchend', clearHoldTimer);
+    switchStyleBtn.addEventListener('touchcancel', clearHoldTimer);
+</script>
+</body>
+</html>
