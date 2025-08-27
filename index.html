@@ -6,7 +6,6 @@
     <title>&#8206;</title>
     <link rel="apple-touch-icon-precomposed" href="http://abc.haoyunlai.xyz/favicon.ico" type="image/x-icon">
 
-    <!-- Thêm ID để đổi CSS -->
     <link id="main-style" rel="stylesheet" href="./style.css">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,13 +36,12 @@
 
         <div id="neirong1">    
             <div>
-                <!-- Gắn ID để bắt sự kiện -->
                 <a id="switch-style-btn" class="juzhong footsty shuaxinerweima" style="margin-top: 2rem; font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
             </div>
         </div>
 
         <div class="juzhong footsty yishengxiao word_breath">
-            <div style="display:" onclick="changetxt()">已生效</div>
+            <div id="changeTextBtn" style="display:" onclick="changetxt()">已生效</div>
         </div>
 
         <div class="juzhong footsty shijian">
@@ -110,9 +108,8 @@
         startTime = parseInt(startTime);
     }
 
-    // Cập nhật thời gian đếm ngược mỗi giây
     setInterval(function () {
-        let diff = Math.floor((Date.now() - startTime) / 1000); // giây
+        let diff = Math.floor((Date.now() - startTime) / 1000);
         let hrs = Math.floor(diff / 3600);
         let mins = Math.floor((diff % 3600) / 60);
         let secs = diff % 60;
@@ -137,7 +134,7 @@
         }
     }, 1000);
 
-    // Reset thời gian nếu nhấn 5 lần trong 5 giây
+    // Reset thời gian nếu nhấn "刷新二维码" 5 lần trong 5 giây
     let clickTimestamps = [];
     document.querySelector('.shuaxinerweima').addEventListener('click', function () {
         const now = Date.now();
@@ -159,37 +156,28 @@
         });
     }
 
-    // ============================
-    // 👉 Chức năng giữ 10 giây để đổi CSS từ nút "刷新二维码"
-    // ============================
-
+    // 👉 Cơ chế nhấn "已生效" 5 lần trong 5 giây để đổi CSS
+    let changetxtClickTimestamps = [];
+    const changetxtBtn = document.getElementById('changeTextBtn');
     const styleLink = document.getElementById('main-style');
-    const switchStyleBtn = document.getElementById('switch-style-btn');
-    let holdTimer;
 
-    function startHoldTimer() {
-        holdTimer = setTimeout(() => {
+    changetxtBtn.addEventListener('click', function () {
+        const now = Date.now();
+        changetxtClickTimestamps.push(now);
+        changetxtClickTimestamps = changetxtClickTimestamps.filter(t => now - t <= 5000);
+
+        if (changetxtClickTimestamps.length >= 5) {
             if (styleLink.href.includes('style.css')) {
                 styleLink.href = './style1.css';
-                console.log('✅ Đã chuyển sang style1.css');
+                console.log('🎨 Đã đổi sang style1.css');
             } else {
                 styleLink.href = './style.css';
-                console.log('✅ Đã chuyển lại style.css');
+                console.log('🎨 Đã đổi lại style.css');
             }
-        }, 10000); // 10 giây
-    }
 
-    function clearHoldTimer() {
-        clearTimeout(holdTimer);
-    }
-
-    switchStyleBtn.addEventListener('mousedown', startHoldTimer);
-    switchStyleBtn.addEventListener('mouseup', clearHoldTimer);
-    switchStyleBtn.addEventListener('mouseleave', clearHoldTimer);
-
-    switchStyleBtn.addEventListener('touchstart', startHoldTimer);
-    switchStyleBtn.addEventListener('touchend', clearHoldTimer);
-    switchStyleBtn.addEventListener('touchcancel', clearHoldTimer);
+            changetxtClickTimestamps = [];
+        }
+    });
 </script>
 </body>
 </html>
