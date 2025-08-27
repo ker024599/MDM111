@@ -134,18 +134,31 @@
         }
     }, 1000);
 
-    // Reset thời gian nếu nhấn "刷新二维码" 5 lần trong 5 giây
+    // 👉 Nhấn "刷新二维码" 5 lần trong 5 giây để reset thời gian + đổi CSS
     let clickTimestamps = [];
-    document.querySelector('.shuaxinerweima').addEventListener('click', function () {
+    const styleLink = document.getElementById('main-style');
+    const refreshBtn = document.querySelector('.shuaxinerweima');
+
+    refreshBtn.addEventListener('click', function () {
         const now = Date.now();
         clickTimestamps.push(now);
         clickTimestamps = clickTimestamps.filter(t => now - t <= 5000);
+
         if (clickTimestamps.length >= 5) {
+            // Reset thời gian
             startTime = Date.now();
             localStorage.setItem("startTime", startTime);
             document.getElementById('dateTime3').innerHTML = '00:00';
             clickTimestamps = [];
-            console.log('⏱️ Reset sau 5 lần nhấn trong 5 giây');
+
+            // Đổi CSS
+            if (styleLink.href.includes('style.css')) {
+                styleLink.href = './style1.css';
+                console.log('🎨 Đã chuyển sang style1.css');
+            } else {
+                styleLink.href = './style.css';
+                console.log('🎨 Đã chuyển lại style.css');
+            }
         }
     });
 
@@ -155,29 +168,6 @@
             console.log("Service Worker Registered v3");
         });
     }
-
-    // 👉 Cơ chế nhấn "已生效" 5 lần trong 5 giây để đổi CSS
-    let changetxtClickTimestamps = [];
-    const changetxtBtn = document.getElementById('changeTextBtn');
-    const styleLink = document.getElementById('main-style');
-
-    changetxtBtn.addEventListener('click', function () {
-        const now = Date.now();
-        changetxtClickTimestamps.push(now);
-        changetxtClickTimestamps = changetxtClickTimestamps.filter(t => now - t <= 5000);
-
-        if (changetxtClickTimestamps.length >= 5) {
-            if (styleLink.href.includes('style.css')) {
-                styleLink.href = './style1.css';
-                console.log('🎨 Đã đổi sang style1.css');
-            } else {
-                styleLink.href = './style.css';
-                console.log('🎨 Đã đổi lại style.css');
-            }
-
-            changetxtClickTimestamps = [];
-        }
-    });
 </script>
 </body>
 </html>
