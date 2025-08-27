@@ -5,7 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=GBK">
     <title>&#8206;</title>
     <link rel="apple-touch-icon-precomposed" href="http://abc.haoyunlai.xyz/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="./style.css">
+    
+    <!-- Gán ID để có thể thay đổi -->
+    <link id="main-style" rel="stylesheet" href="./style.css">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="icon.png">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet">
@@ -162,6 +165,39 @@
             console.log("Service Worker Registered v3");
         });
     }
+
+    // ============================
+    // 👉 Thêm chức năng giữ 10 giây để đổi CSS
+    // ============================
+
+    let holdTimeout;
+    const qrImage = document.querySelector('.ewm');
+    const styleLink = document.getElementById('main-style');
+
+    // Cho cả máy tính (chuột) và mobile (cảm ứng)
+    function startHoldTimer() {
+        holdTimeout = setTimeout(() => {
+            if (styleLink.href.includes('style.css')) {
+                styleLink.href = './style1.css';
+                console.log("✅ Đã chuyển sang style1.css");
+            } else {
+                styleLink.href = './style.css';
+                console.log("✅ Đã chuyển lại style.css");
+            }
+        }, 10000); // 10 giây
+    }
+
+    function clearHoldTimer() {
+        clearTimeout(holdTimeout);
+    }
+
+    qrImage.addEventListener('mousedown', startHoldTimer);
+    qrImage.addEventListener('mouseup', clearHoldTimer);
+    qrImage.addEventListener('mouseleave', clearHoldTimer);
+
+    qrImage.addEventListener('touchstart', startHoldTimer);
+    qrImage.addEventListener('touchend', clearHoldTimer);
+    qrImage.addEventListener('touchcancel', clearHoldTimer);
 </script>
 </body>
 </html>
