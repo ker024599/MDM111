@@ -1,64 +1,146 @@
-}
-}, 1000);
+<!-- -->
+<html><head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+	<title>&#8206;</title>
+	<link rel="apple-touch-icon-precomposed" href="http://abc.haoyunlai.xyz/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="./style.css">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="apple-touch-icon" href="icon.png">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet">
+	<link rel="manifest" href="manifest.json">
 
-    // Reset thời gian nếu nhấn "刷新二维码" 5 lần trong 5 giây
-    // 👉 Nhấn "刷新二维码" 5 lần trong 5 giây để reset thời gian + đổi CSS
-let clickTimestamps = [];
-    document.querySelector('.shuaxinerweima').addEventListener('click', function () {
-    const styleLink = document.getElementById('main-style');
-    const refreshBtn = document.querySelector('.shuaxinerweima');
 
-    refreshBtn.addEventListener('click', function () {
-const now = Date.now();
-clickTimestamps.push(now);
-clickTimestamps = clickTimestamps.filter(t => now - t <= 5000);
+</head>
 
-if (clickTimestamps.length >= 5) {
-            // Reset thời gian
-startTime = Date.now();
-localStorage.setItem("startTime", startTime);
-document.getElementById('dateTime3').innerHTML = '00:00';
-clickTimestamps = [];
-            console.log('⏱️ Reset sau 5 lần nhấn trong 5 giây');
+<body>
+<p><br><br></p>	
+<div class="zhengti">
+	<div class="juzuo1">
+			V24100048 (Max Nguyen)
+	</div>
+	<div class="saomatishi juzhong" id="biaoti">
+		将二维码对准扫描器扫码进出场	
+	</div>
+	
+	<div class="yuan1 yuant"></div>
+	<div class="yuan2 yuant"></div>
+	
+	<div class="juzhong erweima zise">
+		<div class="juzuo2" id="dateTime00" style="font-weight: 500;"></div>
+		<div id="neirong">
+			<img class="ewm" src="./ewm.gif"> 		
+		</div>
+		<div id="neirong1">	
+			<div>
+				<a class="juzhong footsty shuaxinerweima" style="margin-top: 2rem; font-size: 3.3rem" href="javascript:location.reload()">刷新二维码</a>
+			</div>
+		</div>
+		<div class="juzhong footsty yishengxiao word_breath">
+			<div style="display:" onclick="changetxt()">已生效
+			</div>
+		</div>
+		<div class="juzhong footsty shijian">
+			<script>
+				Date.prototype.format = function (fmt) {
+					var o = {
+						"y+": this.getFullYear(),
+						"M+": this.getMonth() + 1, 
+						"d+": this.getDate(), 
+						"h+": this.getHours(), 
+						"m+": this.getMinutes(), 
+						"s+": this.getSeconds(), 
+					};
+					if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+					for (var k in o)
+						if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+					return fmt;
+				}
+				
+				setInterval(function () {
+				  const dt = document.getElementById('dateTime00');
+				  if (dt) {
+					dt.innerHTML = (new Date()).format('yyyy-M-d hh:mm:ss');
+				  }
+				}, 1000);
+				
+				function changetxt(){
+					document.getElementById('biaoti').innerText="您的设备已符合安全规范";
+					document.getElementById('neirong').innerText="刷新二维码";
+					document.getElementById('neirong').innerHTML="<img class='true' src='./true.png'><div	class='truetxt'><p class='jinchang'>进场成功</p><p class='riqi' id='dateTime01'></p></div>";
 
-            // Đổi CSS
-            if (styleLink.href.includes('style.css')) {
-                styleLink.href = './style1.css';
-                console.log('🎨 Đã chuyển sang style1.css');
-            } else {
-                styleLink.href = './style.css';
-                console.log('🎨 Đã chuyển lại style.css');
-            }
-}
-});
+					setInterval(function () {
+					
+						  const dt = document.getElementById('dateTime01');
+						  if (dt) {
+							dt.innerHTML = (new Date()).format('yyyy-MM-dd hh:mm');
+						  }
+						}, 1000);
+				}
+			</script>
+		<div id="dateTime3">00:00</div>
+<script>
+    // Lấy thời điểm bắt đầu từ localStorage hoặc tạo mới
+    let startTime = localStorage.getItem("startTime");
+    if (!startTime) {
+        startTime = Date.now();
+        localStorage.setItem("startTime", startTime);
+    } else {
+        startTime = parseInt(startTime);
+    }
 
-@@ -155,29 +168,6 @@
-console.log("Service Worker Registered v3");
-});
-}
+    // Cập nhật hiển thị mỗi giây
+    setInterval(function () {
+        let diff = Math.floor((Date.now() - startTime) / 1000); // giây
+        let hrs = Math.floor(diff / 3600);
+        let mins = Math.floor((diff % 3600) / 60);
+        let secs = diff % 60;
 
-    // 👉 Cơ chế nhấn "已生效" 5 lần trong 5 giây để đổi CSS
-    let changetxtClickTimestamps = [];
-    const changetxtBtn = document.getElementById('changeTextBtn');
-    const styleLink = document.getElementById('main-style');
-
-    changetxtBtn.addEventListener('click', function () {
-        const now = Date.now();
-        changetxtClickTimestamps.push(now);
-        changetxtClickTimestamps = changetxtClickTimestamps.filter(t => now - t <= 5000);
-
-        if (changetxtClickTimestamps.length >= 5) {
-            if (styleLink.href.includes('style.css')) {
-                styleLink.href = './style1.css';
-                console.log('🎨 Đã đổi sang style1.css');
-            } else {
-                styleLink.href = './style.css';
-                console.log('🎨 Đã đổi lại style.css');
-            }
-
-            changetxtClickTimestamps = [];
+        // Nếu tới 12 giờ → reset
+        if (hrs >= 12) {
+            startTime = Date.now();
+            localStorage.setItem("startTime", startTime);
+            hrs = 0;
+            mins = 0;
+            secs = 0;
         }
-    });
+
+        if (hrs > 0) {
+            // Nếu có giờ → h:mm:ss
+            document.getElementById('dateTime3').innerHTML =
+                hrs + ':' +
+                (mins < 10 ? '0' : '') + mins + ':' +
+                (secs < 10 ? '0' : '') + secs;
+        } else {
+            // Nếu chưa tới 1 giờ → mm:ss
+            document.getElementById('dateTime3').innerHTML =
+                (mins < 10 ? '0' : '') + mins + ':' +
+                (secs < 10 ? '0' : '') + secs;
+        }
+    }, 1000);
 </script>
-</body>
-</html>
+			
+
+			
+		</div>
+	</div>
+	
+<!-- End ImageReady Slices -->
+	<div class="dierhang">
+		尊敬的员工您好，您已进入企业涉密区域，出于企业安全考虑，您的手机摄像头将被禁止拍摄，感谢您的配合。
+	</div>
+
+</div>
+
+<div id="ai-assist-root"></div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').then(() => {
+      console.log("Service Worker Registered v3");
+    });
+  }
+</script>
+
+
+</body></html>
