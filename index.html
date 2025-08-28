@@ -22,7 +22,6 @@
         V24050026 ( Jun Vu )
     </div>
 
-    <!-- Tiêu đề chính -->
     <div class="saomatishi juzhong" id="biaoti">
         将二维码对准扫描器扫码进出场    
     </div>
@@ -37,10 +36,10 @@
         </div>
 
         <div id="neirong1">    
-            <!-- Nút 申请离场 + 刷新二维码 -->
-            <div class="juzhong" style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem;">
-                <a id="leave-btn" class="footsty shuaxinerweima" style="font-size: 3.3rem" href="javascript:void(0)">申请离场</a>
-                <a id="switch-style-btn" class="footsty shuaxinerweima" style="font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
+            <!-- Hai nút chức năng -->
+            <div class="juzhong btn-wrapper">
+                <a id="leave-btn" class="footsty shuaxinerweima" href="javascript:void(0)">申请离场</a>
+                <a id="switch-style-btn" class="footsty shuaxinerweima" href="javascript:void(0)">刷新二维码</a>
             </div>
         </div>
 
@@ -61,7 +60,7 @@
 <div id="ai-assist-root"></div>
 
 <script>
-    // Format datetime
+    // Format thời gian
     Date.prototype.format = function (fmt) {
         var o = {
             "y+": this.getFullYear(),
@@ -78,7 +77,7 @@
         return fmt;
     }
 
-    // Hiển thị thời gian hiện tại
+    // Hiển thị thời gian
     setInterval(function () {
         const dt = document.getElementById('dateTime00');
         if (dt) {
@@ -86,7 +85,7 @@
         }
     }, 1000);
 
-    // Đổi nội dung khi nhấn “已生效”
+    // Thay đổi nội dung khi nhấn 已生效
     function changetxt() {
         document.getElementById('biaoti').innerText = "您的设备已符合安全规范";
         document.getElementById('neirong').innerHTML =
@@ -103,7 +102,7 @@
         }, 1000);
     }
 
-    // Đếm thời gian phiên
+    // Đếm thời gian phiên truy cập
     let startTime = localStorage.getItem("startTime");
     if (!startTime) {
         startTime = Date.now();
@@ -133,7 +132,7 @@
             (secs < 10 ? '0' : '') + secs;
     }, 1000);
 
-    // Nhấn "刷新二维码" 5 lần trong 5 giây để đổi style
+    // Nhấn "刷新二维码" 5 lần để đổi style
     let clickTimestamps = [];
     const styleLink = document.getElementById('main-style');
     const refreshBtn = document.getElementById('switch-style-btn');
@@ -151,15 +150,15 @@
 
             if (styleLink.href.includes('style.css')) {
                 styleLink.href = './style1.css';
-                console.log('🎨 Đã chuyển sang style1.css');
+                console.log('🎨 Switched to style1.css');
             } else {
                 styleLink.href = './style.css';
-                console.log('🎨 Đã chuyển lại style.css');
+                console.log('🎨 Switched back to style.css');
             }
         }
     });
 
-    // Xử lý nút “申请离场”
+    // Xử lý nút 申请离场
     document.getElementById('leave-btn').addEventListener('click', function () {
         alert("您已申请离场，系统将记录此次请求。");
     });
@@ -167,7 +166,7 @@
     // Đăng ký service worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').then(() => {
-            console.log("Service Worker Registered v3");
+            console.log("Service Worker Registered");
         });
     }
 </script>
