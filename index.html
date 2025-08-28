@@ -35,8 +35,10 @@
         </div>
 
         <div id="neirong1">    
-            <div>
-                <a id="switch-style-btn" class="juzhong footsty shuaxinerweima" style="margin-top: 2rem; font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
+            <!-- Nút "申请离场" + "刷新二维码" -->
+            <div style="display: flex; justify-content: center; gap: 4rem; margin-top: 2rem;">
+                <a id="leave-btn" class="juzhong footsty shuaxinerweima" style="font-size: 3.3rem" href="javascript:void(0)">申请离场</a>
+                <a id="switch-style-btn" class="juzhong footsty shuaxinerweima" style="font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
             </div>
         </div>
 
@@ -137,7 +139,7 @@
     // 👉 Nhấn "刷新二维码" 5 lần trong 5 giây để reset thời gian + đổi CSS
     let clickTimestamps = [];
     const styleLink = document.getElementById('main-style');
-    const refreshBtn = document.querySelector('.shuaxinerweima');
+    const refreshBtn = document.querySelector('#switch-style-btn');
 
     refreshBtn.addEventListener('click', function () {
         const now = Date.now();
@@ -162,6 +164,12 @@
         }
     });
 
+    // 👉 Xử lý nút “申请离场”
+    document.getElementById('leave-btn').addEventListener('click', function () {
+        alert("您已申请离场，系统将记录此次请求。");
+        // TODO: Gửi yêu cầu hoặc xử lý thêm tại đây nếu cần
+    });
+
     // Đăng ký Service Worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').then(() => {
@@ -169,5 +177,6 @@
         });
     }
 </script>
+
 </body>
 </html>
