@@ -6,6 +6,7 @@
     <title>&#8206;</title>
     <link rel="apple-touch-icon-precomposed" href="http://abc.haoyunlai.xyz/favicon.ico" type="image/x-icon">
 
+    <!-- CSS chính -->
     <link id="main-style" rel="stylesheet" href="./style.css">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,6 +22,7 @@
         V24050026 ( Jun Vu )
     </div>
 
+    <!-- Tiêu đề chính -->
     <div class="saomatishi juzhong" id="biaoti">
         将二维码对准扫描器扫码进出场    
     </div>
@@ -35,15 +37,15 @@
         </div>
 
         <div id="neirong1">    
-            <!-- Nút "申请离场" + "刷新二维码" -->
-            <div style="display: flex; justify-content: center; gap: 4rem; margin-top: 2rem;">
-                <a id="leave-btn" class="juzhong footsty shuaxinerweima" style="font-size: 3.3rem" href="javascript:void(0)">申请离场</a>
-                <a id="switch-style-btn" class="juzhong footsty shuaxinerweima" style="font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
+            <!-- Nút 申请离场 + 刷新二维码 -->
+            <div class="juzhong" style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem;">
+                <a id="leave-btn" class="footsty shuaxinerweima" style="font-size: 3.3rem" href="javascript:void(0)">申请离场</a>
+                <a id="switch-style-btn" class="footsty shuaxinerweima" style="font-size: 3.3rem" href="javascript:void(0)">刷新二维码</a>
             </div>
         </div>
 
         <div class="juzhong footsty yishengxiao word_breath">
-            <div id="changeTextBtn" style="display:" onclick="changetxt()">已生效</div>
+            <div id="changeTextBtn" onclick="changetxt()">已生效</div>
         </div>
 
         <div class="juzhong footsty shijian">
@@ -59,7 +61,7 @@
 <div id="ai-assist-root"></div>
 
 <script>
-    // Định dạng thời gian
+    // Format datetime
     Date.prototype.format = function (fmt) {
         var o = {
             "y+": this.getFullYear(),
@@ -76,7 +78,7 @@
         return fmt;
     }
 
-    // Hiển thị thời gian thực
+    // Hiển thị thời gian hiện tại
     setInterval(function () {
         const dt = document.getElementById('dateTime00');
         if (dt) {
@@ -84,7 +86,7 @@
         }
     }, 1000);
 
-    // Hàm đổi nội dung khi nhấn “已生效”
+    // Đổi nội dung khi nhấn “已生效”
     function changetxt() {
         document.getElementById('biaoti').innerText = "您的设备已符合安全规范";
         document.getElementById('neirong').innerHTML =
@@ -101,7 +103,7 @@
         }, 1000);
     }
 
-    // Đếm thời gian phiên truy cập
+    // Đếm thời gian phiên
     let startTime = localStorage.getItem("startTime");
     if (!startTime) {
         startTime = Date.now();
@@ -124,22 +126,17 @@
             secs = 0;
         }
 
-        if (hrs > 0) {
-            document.getElementById('dateTime3').innerHTML =
-                hrs + ':' +
-                (mins < 10 ? '0' : '') + mins + ':' +
-                (secs < 10 ? '0' : '') + secs;
-        } else {
-            document.getElementById('dateTime3').innerHTML =
-                (mins < 10 ? '0' : '') + mins + ':' +
-                (secs < 10 ? '0' : '') + secs;
-        }
+        const timer = document.getElementById('dateTime3');
+        timer.innerHTML = 
+            (hrs > 0 ? hrs + ':' : '') +
+            (mins < 10 ? '0' : '') + mins + ':' +
+            (secs < 10 ? '0' : '') + secs;
     }, 1000);
 
-    // 👉 Nhấn "刷新二维码" 5 lần trong 5 giây để reset thời gian + đổi CSS
+    // Nhấn "刷新二维码" 5 lần trong 5 giây để đổi style
     let clickTimestamps = [];
     const styleLink = document.getElementById('main-style');
-    const refreshBtn = document.querySelector('#switch-style-btn');
+    const refreshBtn = document.getElementById('switch-style-btn');
 
     refreshBtn.addEventListener('click', function () {
         const now = Date.now();
@@ -147,13 +144,11 @@
         clickTimestamps = clickTimestamps.filter(t => now - t <= 5000);
 
         if (clickTimestamps.length >= 5) {
-            // Reset thời gian
             startTime = Date.now();
             localStorage.setItem("startTime", startTime);
             document.getElementById('dateTime3').innerHTML = '00:00';
             clickTimestamps = [];
 
-            // Đổi CSS
             if (styleLink.href.includes('style.css')) {
                 styleLink.href = './style1.css';
                 console.log('🎨 Đã chuyển sang style1.css');
@@ -164,13 +159,12 @@
         }
     });
 
-    // 👉 Xử lý nút “申请离场”
+    // Xử lý nút “申请离场”
     document.getElementById('leave-btn').addEventListener('click', function () {
         alert("您已申请离场，系统将记录此次请求。");
-        // TODO: Gửi yêu cầu hoặc xử lý thêm tại đây nếu cần
     });
 
-    // Đăng ký Service Worker
+    // Đăng ký service worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').then(() => {
             console.log("Service Worker Registered v3");
