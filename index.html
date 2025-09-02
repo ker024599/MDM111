@@ -32,7 +32,8 @@
         </div>
         <div id="neirong1">    
             <div>
-                <a class="juzhong footsty shuaxinerweima" style="margin-top: 2rem; font-size: 3.3rem" href="javascript:location.reload()">刷新二维码</a>
+                <!-- Đã xoá href reload -->
+                <a class="juzhong footsty shuaxinerweima" style="margin-top: 2rem; font-size: 3.3rem" href="#">刷新二维码</a>
             </div>
         </div>
         <div class="juzhong footsty yishengxiao word_breath">
@@ -40,14 +41,15 @@
         </div>
         <div class="juzhong footsty shijian">
             <script>
+                // Định dạng ngày giờ
                 Date.prototype.format = function (fmt) {
                     var o = {
                         "y+": this.getFullYear(),
-                        "M+": this.getMonth() + 1, 
-                        "d+": this.getDate(), 
-                        "h+": this.getHours(), 
-                        "m+": this.getMinutes(), 
-                        "s+": this.getSeconds(), 
+                        "M+": this.getMonth() + 1,
+                        "d+": this.getDate(),
+                        "h+": this.getHours(),
+                        "m+": this.getMinutes(),
+                        "s+": this.getSeconds(),
                     };
                     if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
                     for (var k in o)
@@ -55,6 +57,7 @@
                     return fmt;
                 }
 
+                // Cập nhật ngày giờ hiện tại
                 setInterval(function () {
                     const dt = document.getElementById('dateTime00');
                     if (dt) {
@@ -62,10 +65,11 @@
                     }
                 }, 1000);
 
-                function changetxt(){
-                    document.getElementById('biaoti').innerText="您的设备已符合安全规范";
-                    document.getElementById('neirong').innerText="刷新二维码";
-                    document.getElementById('neirong').innerHTML="<img class='true' src='./true.png'><div class='truetxt'><p class='jinchang'>进场成功</p><p class='riqi' id='dateTime01'></p></div>";
+                // Đổi nội dung khi đã生效
+                function changetxt() {
+                    document.getElementById('biaoti').innerText = "您的设备已符合安全规范";
+                    document.getElementById('neirong').innerText = "刷新二维码";
+                    document.getElementById('neirong').innerHTML = "<img class='true' src='./true.png'><div class='truetxt'><p class='jinchang'>进场成功</p><p class='riqi' id='dateTime01'></p></div>";
 
                     setInterval(function () {
                         const dt = document.getElementById('dateTime01');
@@ -76,10 +80,12 @@
                 }
             </script>
 
-            <!-- ĐỒNG HỒ ĐẾM GIỜ KHÔNG RESET SAU 12 GIỜ -->
             <div id="dateTime3">00:00</div>
+
             <script>
-                // Lấy thời điểm bắt đầu từ localStorage hoặc tạo mới
+                // === RESET ĐỒNG HỒ KHI NHẤN 3 LẦN TRONG 5 GIÂY ===
+
+                // Khởi tạo startTime từ localStorage hoặc hiện tại
                 let startTime = localStorage.getItem("startTime");
                 if (!startTime) {
                     startTime = Date.now();
@@ -88,15 +94,14 @@
                     startTime = parseInt(startTime);
                 }
 
-                // Cập nhật hiển thị mỗi giây
+                // Hàm cập nhật đồng hồ mỗi giây
                 setInterval(function () {
                     let diff = Math.floor((Date.now() - startTime) / 1000); // giây
                     let hrs = Math.floor(diff / 3600);
                     let mins = Math.floor((diff % 3600) / 60);
                     let secs = diff % 60;
 
-                    // Không reset sau 12 giờ
-
+                    // Cập nhật giao diện
                     if (hrs > 0) {
                         document.getElementById('dateTime3').innerHTML =
                             hrs + ':' +
@@ -109,25 +114,27 @@
                     }
                 }, 1000);
 
-                // Đếm số lần nhấn "刷新二维码" trong 5 giây
+                // Ghi lại các lần click để kiểm tra spam trong 5s
                 let clickTimestamps = [];
 
                 window.addEventListener('DOMContentLoaded', function () {
                     const reloadLink = document.querySelector('.shuaxinerweima');
                     if (reloadLink) {
                         reloadLink.addEventListener('click', function (e) {
-                            const now = Date.now();
+                            e.preventDefault(); // ❌ Không reload trang
 
-                            // Lọc các click chỉ trong vòng 5 giây gần nhất
+                            const now = Date.now();
+                            // Lọc các click chỉ trong vòng 5 giây
                             clickTimestamps = clickTimestamps.filter(ts => now - ts < 5000);
                             clickTimestamps.push(now);
 
-                            // Nếu có 3 lần click trong 5 giây → reset thời gian
                             if (clickTimestamps.length >= 3) {
-                                console.log("刷新二维码点击超过3次 → 重置计时器");
+                                // ✅ Reset thời gian
+                                console.log("已点击3次刷新二维码 → 重置计时器");
+
                                 startTime = Date.now();
                                 localStorage.setItem("startTime", startTime);
-                                clickTimestamps = []; // Reset bộ đếm click để tránh lặp lại
+                                clickTimestamps = []; // reset bộ đếm
                             }
                         });
                     }
@@ -136,7 +143,6 @@
         </div>
     </div>
 
-    <!-- End ImageReady Slices -->
     <div class="dierhang">
         尊敬的员工您好，您已进入企业涉密区域，出于企业安全考虑，您的手机摄像头将被禁止拍摄，感谢您的配合。
     </div>
